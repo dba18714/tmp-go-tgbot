@@ -53,7 +53,7 @@ func main() {
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
 		// 回复 "Hello, World!"
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello, World!")
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Golang 你说："+update.Message.Text)
 		if _, err := bot.Send(msg); err != nil {
 			log.Println(err)
 		}
