@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -49,13 +51,30 @@ func main() {
 			continue
 		}
 
+		// 记录开始时间
+		start := time.Now()
+
 		// 打印接收到的消息
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
-		// 回复 "Hello, World!"
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Golang 你说："+update.Message.Text)
-		if _, err := bot.Send(msg); err != nil {
+		// 计算处理用时
+		elapsed := time.Since(start)
+
+		// 回复消息，包含处理用时
+		responseText := fmt.Sprintf("Golang 你说：%s\n处理用时：%v", update.Message.Text, elapsed)
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, responseText)
+
+		// 发送消息
+		_, err := bot.Send(msg)
+		if err != nil {
 			log.Println(err)
 		}
+
+		// 记录总用时
+		totalElapsed := time.Since(start)
+		log.Printf("消息处理完成 - 用户: [%s], 消息: [%s], 总用时: %v",
+			update.Message.From.UserName,
+			update.Message.Text,
+			totalElapsed)
 	}
 }
